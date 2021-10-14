@@ -1,1 +1,6 @@
 .idea
+.settings
+.classpath
+.project
+..gitignore.swp
+target/
