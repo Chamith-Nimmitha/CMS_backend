@@ -1,0 +1,9 @@
+gui:
+  brand: 'CMS-APP'
+  title: 'First Project'
+  search: true
+  menu:
+    Home: /
+    About:
+      About Us: /about
+      About You: /
