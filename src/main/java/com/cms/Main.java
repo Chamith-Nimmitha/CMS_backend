@@ -12,5 +12,8 @@ public class Main {
 
         List userList = ur.getUserList();
         userList.forEach(System.out::println);
+
+        Rapidoid rd = new Rapidoid();
+        rd.runServer();
     }
 }
