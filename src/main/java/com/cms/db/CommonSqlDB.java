@@ -13,7 +13,7 @@ public class CommonSqlDB implements CommonDB {
     private Connection con;
 
     public CommonSqlDB(){
-        this.url = "jdbc:mysql://localhost:3306/javaTest";
+        this.url = "jdbc:mysql://localhost:8811/javaTest";
         this.username = "root";
         this.password = "";
         try {
