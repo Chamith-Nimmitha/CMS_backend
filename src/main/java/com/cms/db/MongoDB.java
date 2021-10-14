@@ -1,5 +1,4 @@
 package com.cms.db;
-import com.cms.db.CommonDB;
 import com.mongodb.client.*;
 import org.bson.Document;
 
@@ -81,7 +80,7 @@ public class MongoDB implements CommonDB {
     }
 
     @Override
-    public List update(String table, Map<String, String> data, Map<String, String> where) {
-        return null;
+    public boolean update(String table, Map<String, Object> data, Map<String, String> where) {
+        return true;
     }
 }
