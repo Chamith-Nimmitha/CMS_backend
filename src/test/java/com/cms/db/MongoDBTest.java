@@ -6,9 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class CommonSqlDBTest {
 
-    CommonDB DB = new CommonSqlDB();
+class MongoDBTest {
+
+    CommonDB DB = new MongoDB();
     @Test
     void select() {
         List users = null;
@@ -24,8 +25,7 @@ class CommonSqlDBTest {
     void testSelect() {
         List users = null;
         Map<String, String> where = new HashMap();
-        where.put("name", "kamal");
-        where.put("age", "45");
+        where.put("name", "John");
         try {
             users = DB.select("user", where);
         } catch (Exception e) {
@@ -60,7 +60,7 @@ class CommonSqlDBTest {
             e.printStackTrace();
         }
 
-        // select new user
+        // select created user
         Map user = null;
         Map<String, String> where = new HashMap();
         where.put("name", "namal");
@@ -72,7 +72,7 @@ class CommonSqlDBTest {
         }
         int result = 0;
         try {
-            result = DB.delete("user", (String) user.get("id").toString());
+            result = DB.delete("user", user.get("_id").toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,7 +103,7 @@ class CommonSqlDBTest {
             return;
         }
         Map<String, String> whereUpdate = new HashMap();
-        whereUpdate.put("id", user.get("id").toString());
+        whereUpdate.put("_id", user.get("_id").toString());
 
         Map<String, Object> newData = new HashMap();
         newData.put("name", "asd");
@@ -115,6 +115,13 @@ class CommonSqlDBTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+//      delete created user
+        try {
+            DB.delete("user", user.get("_id").toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         System.out.println(result);
     }
 }

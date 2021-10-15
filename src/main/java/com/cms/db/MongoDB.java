@@ -1,8 +1,11 @@
 package com.cms.db;
 import com.cms.config.Configuration;
 import com.cms.config.ConfigurationManager;
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.*;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.io.IOException;
 import java.sql.DriverManager;
@@ -72,7 +75,24 @@ public class MongoDB implements CommonDB {
 
     @Override
     public List select(String table, Map<String, String> where) {
-        return null;
+        MongoCollection<Document> users = DB.getCollection("user");
+
+        BasicDBObject query = new BasicDBObject();
+        for(String k: where.keySet()){
+            query.put(k, where.get(k));
+        }
+        FindIterable<Document> documents = users.find(query);
+        Iterator i = documents.iterator();
+        ArrayList data = new ArrayList();
+        while(i.hasNext()){
+            Map<String,String> row = new HashMap();
+            Document next = (Document) i.next();
+            for( String k: next.keySet()){
+                row.put(k, next.get(k).toString());
+            }
+            data.add(row);
+        }
+        return data;
     }
 
     @Override
@@ -91,7 +111,9 @@ public class MongoDB implements CommonDB {
 
         try {
             MongoCollection<Document> users = this.DB.getCollection(table);
-            users.deleteOne(eq("id", pk));
+            BasicDBObject where = new BasicDBObject();
+            where.put("_id", new ObjectId(pk));
+            users.deleteOne(where);
             return 1;
         }catch (Exception e){
             return 0;
@@ -100,6 +122,25 @@ public class MongoDB implements CommonDB {
 
     @Override
     public boolean update(String table, Map<String, Object> data, Map<String, String> where) {
+        MongoCollection<Document> users = DB.getCollection("user");
+
+        BasicDBObject query = new BasicDBObject();
+
+        for( String k: where.keySet()){
+            query.put(k, new ObjectId(where.get(k)));
+        }
+
+        BasicDBObject newDocument = new BasicDBObject();
+
+        for(String k: data.keySet()){
+            newDocument.put(k, data.get(k));
+        }
+
+        BasicDBObject updatedObject = new BasicDBObject();
+        updatedObject.put("$set", newDocument);
+
+        UpdateResult updateResult = users.updateMany(query, updatedObject);
+        System.out.println(updateResult);
         return true;
     }
 }
