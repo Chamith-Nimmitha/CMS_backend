@@ -2,8 +2,6 @@ package com.cms.config;
 
 import com.cms.utils.Json;
 import com.fasterxml.jackson.databind.JsonNode;
-
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -19,7 +17,7 @@ public class ConfigurationManager {
         return configurationManager;
     }
 
-    public static Configuration loadConfiguration(String filepath) throws IOException {
+    public Configuration loadConfiguration(String filepath) throws IOException {
 
         FileReader fileReader = new FileReader(filepath);
         StringBuffer stringBuffer = new StringBuffer();
@@ -34,7 +32,7 @@ public class ConfigurationManager {
         return configuration;
     }
 
-    public static Configuration getCurrentConfiguration(){
+    public Configuration getCurrentConfiguration(){
         return configuration;
     }
 }

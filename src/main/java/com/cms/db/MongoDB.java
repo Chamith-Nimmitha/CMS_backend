@@ -1,7 +1,12 @@
 package com.cms.db;
+import com.cms.config.Configuration;
+import com.cms.config.ConfigurationManager;
 import com.mongodb.client.*;
 import org.bson.Document;
 
+import java.io.IOException;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -10,20 +15,34 @@ public class MongoDB implements CommonDB {
 
     MongoDatabase DB;
     public MongoDB(){
-//      String uri = "mongodb://superuser:password@localhost"
-        String uri = "mongodb://chamith:chamith@localhost:27017";
-        String dbname = "MyDatabase";
-//        MongoClient mongoClient = MongoClients.create(uri);
-//        this.DB = mongoClient.getDatabase(dbname);
+        Configuration configuration = null;
+        //  load db configuration
+        try {
+            configuration = ConfigurationManager
+                    .getInstance()
+                    .loadConfiguration("src/main/resources/applicationConfig.json");
+        } catch (IOException e) {
+            System.out.println("Configuration manager failed.");
+            System.exit(0);
+        }
+        String url = configuration.getUrl();
+        try {
+            String dbname = "MyDatabase";
+    //        MongoClient mongoClient = MongoClients.create(uri);
+    //        this.DB = mongoClient.getDatabase(dbname);
 
-        MongoClient mongoClient = MongoClients.create(uri);
+                MongoClient mongoClient = MongoClients.create(url);
 
-//        MongoIterable<String> dbNames = mongoClient.listDatabaseNames();
-//        for(String name: dbNames){
-//            System.out.println(name);
-//        }
-        this.DB = mongoClient.getDatabase(dbname);
-
+    //        MongoIterable<String> dbNames = mongoClient.listDatabaseNames();
+    //        for(String name: dbNames){
+    //            System.out.println(name);
+    //       }
+                this.DB = mongoClient.getDatabase(dbname);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Db connection failed. Plz check DB server is working properly.");
+            System.exit(0);
+        }
     }
 
     @Override

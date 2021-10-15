@@ -2,17 +2,17 @@ package com.cms.config;
 
 public class Configuration {
 
-    private String dbTrpe;
+    private String dbType;
     private String url;
     private String username;
     private String password;
 
-    public String getDbTrpe() {
-        return dbTrpe;
+    public String getDbType() {
+        return dbType;
     }
 
-    public void setDbTrpe(String dbTrpe) {
-        this.dbTrpe = dbTrpe;
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
     }
 
     public String getUrl() {
