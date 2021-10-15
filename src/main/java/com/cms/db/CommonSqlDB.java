@@ -1,5 +1,9 @@
 package com.cms.db;
 
+import com.cms.config.Configuration;
+import com.cms.config.ConfigurationManager;
+
+import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
@@ -10,14 +14,25 @@ public class CommonSqlDB implements CommonDB {
     private String password;
     private Connection con;
 
-    public CommonSqlDB(){
-        this.url = "jdbc:mysql://localhost:3306/javaTest";
-        this.username = "root";
-        this.password = "";
+    public CommonSqlDB() {
+        Configuration configuration = null;
+        //  load db configuration
+        try {
+            configuration = ConfigurationManager
+                    .getInstance()
+                    .loadConfiguration("src/main/resources/applicationConfig.json");
+        } catch (IOException e) {
+            System.out.println("Configuration manager failed.");
+            System.exit(0);
+        }
+        this.url = configuration.getUrl();
+        this.username = configuration.getUsername();
+        this.password = configuration.getPassword();
         try {
             this.con = DriverManager.getConnection(this.url, this.username, this.password);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Db connection failed. Plz check DB server is working properly.");
+            System.exit(0);
         }
     }
 

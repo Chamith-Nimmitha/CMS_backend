@@ -13,7 +13,7 @@ public class UserService extends CommonServiceIml{
 
 //    default constructor
     public UserService(){
-        super(new CommonSqlDB());
+        super();
     }
 //    For dependency injection
     public UserService(CommonDB db){
