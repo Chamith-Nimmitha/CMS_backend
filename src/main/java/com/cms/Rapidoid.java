@@ -2,16 +2,18 @@ package com.cms;
 import com.cms.services.UserService;
 import org.rapidoid.http.Req;
 import org.rapidoid.setup.On;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Rapidoid {
 
-    public void runServer(){
+    public void runServer() {
         UserService ur = new UserService();
 
-        On.get("/users").json( () -> {
+        On.get("/users").json(() -> {
             List results = null;
             results = ur.getUserList();
             List finalResults = results;
@@ -30,5 +32,13 @@ public class Rapidoid {
             ur.deleteUser(pk);
             return "Deletion Successful";
         });
+
+        On.get("/getuser/{pk}").json((String pk) -> {
+
+            Map user = ur.getUser(pk);
+            System.out.println(user);
+            return user;
+        });
+
     }
 }
