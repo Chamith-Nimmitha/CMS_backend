@@ -27,6 +27,7 @@ public class Json {
 
     public static String stringify(JsonNode node) throws JsonProcessingException {
         return generateJson(node, false);
+
     }
 
     public static String generateJson(Object obj, boolean pretty) throws JsonProcessingException {

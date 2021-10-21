@@ -1,13 +1,13 @@
 {
-  "dbType": "mongo",
-  "url": "mongodb://chamith:chamith@localhost:27017/javaTest",
-  "username": "",
+  "dbType": "sql",
+  "url": "jdbc:mysql://localhost:3306/javaTest",
+  "username": "root",
   "password": ""
 }
 
 //{
-//  "dbType": "sql",
-//  "url": "jdbc:mysql://localhost:3306/javaTest",
-//  "username": "root",
+//  "dbType": "mongo",
+//  "url": "mongodb://chamith:chamith@localhost:27017/javaTest",
+//  "username": "",
 //  "password": ""
 //}
