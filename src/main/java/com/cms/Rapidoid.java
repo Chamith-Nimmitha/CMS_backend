@@ -20,16 +20,15 @@ public class Rapidoid {
         On.get("/users").json((Req req) -> {
             List results = null;
             results = ur.getUserList();
-            List finalResults = results;
             Resp resp = req.response();
-            resp.json(finalResults);
+            resp.json(results);
             resp.code(200);
             return resp;
         });
         On.page("/about").html("Hello World");
 
 //        add new user
-        On.post("/user/new").json((Req req) -> {
+        On.post("/user").json((Req req) -> {
             Map<String, Object> reqData = req.data();
             Map<Object, Object> data = new HashMap<>();
             data.put("name", reqData.get("name"));
@@ -57,6 +56,22 @@ public class Rapidoid {
             Resp resp = req.response();
             resp.json(user);
             resp.code(200);
+            return resp;
+        });
+
+//        update user
+        On.patch("/user/{pk}").json((Req req) -> {
+            Map<String, String> where = new HashMap<>();
+            where.put("id", req.param("pk"));
+            boolean result = ur.updateUser(req.data(), where);
+            Resp resp = req.response();
+            if(result){
+                resp.code(200);
+                resp.json("{'msg':'User update success'}");
+            }else{
+                resp.code(400);
+                resp.json("{'error':'User update failed'}");
+            }
             return resp;
         });
 
