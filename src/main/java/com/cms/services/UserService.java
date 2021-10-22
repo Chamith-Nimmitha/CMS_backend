@@ -67,7 +67,14 @@ public class UserService extends CommonServiceIml{
      **/
     public boolean updateUser(Map<String,Object> newData, Map<String, String> where){
         try {
-            return this.DB.update("user", newData, where);
+            Map<String, Object> data = new HashMap<>();
+            if(newData.containsKey("name")){
+                data.put("name", newData.get("name"));
+            }
+            if(newData.containsKey("age")){
+                data.put("age", newData.get("age"));
+            }
+            return this.DB.update("user", data, where);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
