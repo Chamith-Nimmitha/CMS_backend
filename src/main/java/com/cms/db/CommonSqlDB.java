@@ -15,16 +15,8 @@ public class CommonSqlDB implements CommonDB {
     private Connection con;
 
     public CommonSqlDB() {
-        Configuration configuration = null;
-        //  load db configuration
-        try {
-            configuration = ConfigurationManager
-                    .getInstance()
-                    .loadConfiguration("src/main/resources/applicationConfig.json");
-        } catch (IOException e) {
-            System.out.println("Configuration manager failed.");
-            System.exit(0);
-        }
+        Configuration configuration = ConfigurationManager.getInstance().getCurrentConfiguration();
+
         this.url = configuration.getUrl();
         this.username = configuration.getUsername();
         this.password = configuration.getPassword();
