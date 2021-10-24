@@ -13,16 +13,7 @@ public class CommonServiceIml implements CommonService{
 
     protected static CommonDB DB;
     public CommonServiceIml() {
-        ConfigurationManager configurationManager = ConfigurationManager.getInstance();
-        Configuration configuration = null;
-        try {
-            configuration = configurationManager
-                    .loadConfiguration("src/main/resources/applicationConfig.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Configuration manager failed in CommonServiceIml");
-            System.exit(1);
-        }
+        Configuration configuration = ConfigurationManager.getInstance().getCurrentConfiguration();
         String dbType = configuration.getDbType();
         System.out.println(dbType);
         if(dbType.equals("sql")){

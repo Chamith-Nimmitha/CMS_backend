@@ -18,16 +18,8 @@ public class MongoDB implements CommonDB {
 
     MongoDatabase DB;
     public MongoDB(){
-        Configuration configuration = null;
-        //  load db configuration
-        try {
-            configuration = ConfigurationManager
-                    .getInstance()
-                    .loadConfiguration("src/main/resources/applicationConfig.json");
-        } catch (IOException e) {
-            System.out.println("Configuration manager failed.");
-            System.exit(0);
-        }
+        Configuration configuration = ConfigurationManager.getInstance().getCurrentConfiguration();
+
         String url = configuration.getUrl();
         try {
             String dbname = "MyDatabase";
