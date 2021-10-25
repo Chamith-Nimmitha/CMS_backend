@@ -110,7 +110,6 @@ public class Rapidoid {
         //        get all users
         On.get("/{type}s").json((Req req) -> {
             List results = null;
-            System.out.println("called");
 
             UserService us = getService(req.param("type"));
             results = us.getUserList();
@@ -124,7 +123,6 @@ public class Rapidoid {
 
 //        add new user
         On.post("/{type}").json((Req req) -> {
-            System.out.println("called");
             Map<String, Object> reqData = req.data();
             Map<Object, Object> data = new HashMap<>();
             data.put("name", reqData.get("name"));
@@ -134,6 +132,7 @@ public class Rapidoid {
             resp.json("{'msg': 'user creation success'}");
             resp.header("Access-Control-Allow-Origin", "*");
             resp.header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS");
             resp.code(201);
             return resp;
         });
@@ -142,9 +141,10 @@ public class Rapidoid {
         On.delete("/{type}/{pk}").json((Req req) -> {
             ur.deleteUser(req.param("pk"));
             Resp resp = req.response();
-            resp.json("{'msg': 'user creation success'}");
+            resp.json("{'msg': 'user delete success'}");
             resp.header("Access-Control-Allow-Origin", "*");
             resp.header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS");
             resp.code(204);
             return resp;
         });
