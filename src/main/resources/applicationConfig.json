@@ -1,5 +1,5 @@
 {
-  "dbType": "test",
+  "dbType": "sql",
   "url": "jdbc:mysql://localhost:3306/javaTest",
   "username": "root",
   "password": ""

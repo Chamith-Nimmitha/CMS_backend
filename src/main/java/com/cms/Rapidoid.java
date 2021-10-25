@@ -1,4 +1,5 @@
 package com.cms;
+import com.cms.services.CommonServiceIml;
 import com.cms.services.UserService;
 import com.cms.utils.Json;
 import org.rapidoid.http.MediaType;
@@ -14,16 +15,7 @@ import java.util.Map;
 public class Rapidoid {
 
 
-    public UserService getService(String type) throws Exception {
-        if(type.equals("user")){
-            return new UserService();
-        }else{
-            throw new Exception("Invalid content type.");
-        }
-    }
-
     public void runServer() {
-        UserService ur = new UserService();
 /*
 //
 ////        get all users
@@ -96,9 +88,11 @@ public class Rapidoid {
 //        });
 //
 */
-
 //        Genaral functions
-        On.options("/users").json( (Req req) -> {
+
+        CommonServiceIml us = new CommonServiceIml();
+
+        On.options("/{type}s").json( (Req req) -> {
 //            req.response().header("Content-type", "application/json; charset=utf-8");
             req.response().header("Access-Control-Allow-Origin", "*");
             req.response().header("Access-Control-Allow-Headers", "origin, x-requested-with, content-type, authorization, " +
@@ -107,12 +101,10 @@ public class Rapidoid {
             return req.response();
         });
 
-        //        get all users
+        //  get all record in specific type
         On.get("/{type}s").json((Req req) -> {
             List results = null;
-
-            UserService us = getService(req.param("type"));
-            results = us.getUserList();
+            results = us.getAll(req.param("type"));
             Resp resp = req.response();
             resp.header("Access-Control-Allow-Origin", "*");
             resp.header("Access-Control-Allow-Headers", "*");
@@ -121,13 +113,17 @@ public class Rapidoid {
             return resp;
         });
 
-//        add new user
+        // add new user to any table
         On.post("/{type}").json((Req req) -> {
             Map<String, Object> reqData = req.data();
-            Map<Object, Object> data = new HashMap<>();
-            data.put("name", reqData.get("name"));
-            data.put("age", Integer.parseInt(reqData.get("age").toString()));
-            ur.insertUser(data);
+            Map<String, Object> data = new HashMap<>();
+            for(String k: reqData.keySet()){
+                if(k.equals("type")){
+                    continue;
+                }
+                data.put(k, reqData.get(k));
+            }
+            us.add(req.param("type"), data);
             Resp resp = req.response();
             resp.json("{'msg': 'user creation success'}");
             resp.header("Access-Control-Allow-Origin", "*");
@@ -137,11 +133,15 @@ public class Rapidoid {
             return resp;
         });
 
-//        delete a specific user
+        // delete a specific user form any table
         On.delete("/{type}/{pk}").json((Req req) -> {
-            ur.deleteUser(req.param("pk"));
+            boolean result = us.delete(req.param("type"), req.param("pk"));
             Resp resp = req.response();
-            resp.json("{'msg': 'user delete success'}");
+            if(result){
+                resp.json("{'msg': 'user delete success'}");
+            }else{
+                resp.json("{'msg': 'user delete failed'}");
+            }
             resp.header("Access-Control-Allow-Origin", "*");
             resp.header("Access-Control-Allow-Headers", "*");
             req.response().header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS");
@@ -149,10 +149,9 @@ public class Rapidoid {
             return resp;
         });
 
-//        get specific user
+        // get specific user from any table
         On.get("/{type}/{pk}").json((Req req) -> {
-
-            Map user = ur.getUser(req.param("pk"));
+            Map user = us.getOne(req.param("type"), req.param("pk"));
             Resp resp = req.response();
             resp.json(user);
             resp.header("Access-Control-Allow-Origin", "*");
@@ -161,18 +160,26 @@ public class Rapidoid {
             return resp;
         });
 
-//        update user
+        // update user in any table
         On.patch("/{type}/{pk}").json((Req req) -> {
+            Map<String, Object> reqData = req.data();
             Map<String, String> where = new HashMap<>();
+            Map<String, Object> data = new HashMap<>();
+            for(String k: reqData.keySet()){
+                if(k.equals("type") || k.equals("pk")){
+                    continue;
+                }
+                data.put(k, reqData.get(k));
+            }
             where.put("id", req.param("pk"));
-            boolean result = ur.updateUser(req.data(), where);
+            boolean result = us.update(req.param("type"), data, where);
             Resp resp = req.response();
             if(result){
                 resp.code(200);
-                resp.json("{'msg':'User update success'}");
+                resp.json("{'msg':'"+req.param("type") +" update success'}");
             }else{
                 resp.code(400);
-                resp.json("{'error':'User update failed'}");
+                resp.json("{'error':'"+req.param("type") +" update failed'}");
             }
             resp.header("Access-Control-Allow-Origin", "*");
             resp.header("Access-Control-Allow-Headers", "*");

@@ -9,6 +9,8 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+
+        System.out.println("Load configurations");
         ConfigurationManager configurationManager = ConfigurationManager.getInstance();
         Configuration configuration = null;
         try {
@@ -20,16 +22,9 @@ public class Main {
             System.exit(1);
         }
 
-        System.out.println("check db");
-        UserService ur = new UserService();
-
-//        print all db users
-        List userList = ur.getUserList();
-        userList.forEach(System.out::println);
-
         System.out.println("start server");
         Rapidoid rd = new Rapidoid();
         rd.runServer();
-        System.out.println("Working properly");
+        System.out.println("Working....");
     }
 }

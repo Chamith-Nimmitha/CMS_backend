@@ -26,7 +26,6 @@ public class TestDB implements CommonDB{
     @Override
     public List select(String table) throws Exception {
         Map <String, Object> tableMap = this.getTable(table);
-
         List<Map<String , Object>> data = new ArrayList();
         tableMap.entrySet().forEach( (k) -> {
             Map<String, Object> row = (Map<String, Object>) k.getValue();
@@ -38,11 +37,21 @@ public class TestDB implements CommonDB{
 
     @Override
     public List select(String table, Map<String, String> where) throws Exception {
-        return null;
+        Map <String, Object> tableMap = this.getTable(table);
+        List<Map<String , Object>> data = new ArrayList();
+        tableMap.entrySet().forEach( (k) -> {
+
+            if( where.get("id").toString().equals( k.getKey())){
+                Map<String, Object> row = (Map<String, Object>) k.getValue();
+                row.put("id", k.getKey());
+                data.add(row);
+            }
+        });
+        return data;
     }
 
     @Override
-    public void insert(String table, Map<Object, Object> data) throws Exception {
+    public void insert(String table, Map<String, Object> data) throws Exception {
         Map <String, Object> tableData = this.getTable(table);
         userCount++;
         tableData.put(""+userCount, data);
@@ -66,8 +75,7 @@ public class TestDB implements CommonDB{
         if(!where.containsKey("id")){
             return false;
         }
-        Map <String, Object> forUpdate = (Map<String, Object>) tableData.get(where.get("id"));
-
+        Map <String, Object> forUpdate = (HashMap<String, Object>) tableData.get(where.get("id"));
         for( String k: data.keySet()){
             forUpdate.put(k, data.get(k));
         }
