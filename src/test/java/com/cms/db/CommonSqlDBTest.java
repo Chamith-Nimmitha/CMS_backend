@@ -36,7 +36,7 @@ class CommonSqlDBTest {
 
     @Test
     void insert() {
-        Map<Object, Object> userData = new HashMap();
+        Map<String, Object> userData = new HashMap();
         userData.put("name", "John");
         userData.put("age", "50");
 
@@ -50,7 +50,7 @@ class CommonSqlDBTest {
     @Test
     void delete() {
         // insert new user
-        Map<Object, Object> userData = new HashMap();
+        Map<String, Object> userData = new HashMap();
         userData.put("name", "namal");
         userData.put("age", "53");
 
@@ -82,7 +82,7 @@ class CommonSqlDBTest {
     @Test
     void update() {
         // insert new user
-        Map<Object, Object> userData = new HashMap();
+        Map<String, Object> userData = new HashMap();
         userData.put("name", "Amal");
         userData.put("age", "53");
 

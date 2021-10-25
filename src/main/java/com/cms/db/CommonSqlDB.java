@@ -3,7 +3,6 @@ package com.cms.db;
 import com.cms.config.Configuration;
 import com.cms.config.ConfigurationManager;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
@@ -111,7 +110,7 @@ public class CommonSqlDB implements CommonDB {
     }
 
     @Override
-    public void insert(String table, Map<Object, Object> data) throws SQLException {
+    public void insert(String table, Map<String, Object> data) throws SQLException {
         String query = "INSERT INTO "+ table + " ";
         final String[] keys = {""};
         final String[] values = {""};

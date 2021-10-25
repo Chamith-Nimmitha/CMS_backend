@@ -7,9 +7,6 @@ import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.io.IOException;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -88,7 +85,7 @@ public class MongoDB implements CommonDB {
     }
 
     @Override
-    public void insert(String table, Map<Object, Object> data) throws Exception {
+    public void insert(String table, Map<String, Object> data) throws Exception {
         MongoCollection<Document> users = this.DB.getCollection(table);
         Document newDoc = new Document();
         data.keySet().forEach(x -> {
