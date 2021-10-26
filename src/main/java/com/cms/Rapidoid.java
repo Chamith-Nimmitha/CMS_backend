@@ -16,6 +16,7 @@ public class Rapidoid {
 
 
     public void runServer() {
+        On.address("127.0.0.1").port(9999);
 /*
 //
 ////        get all users
