@@ -92,7 +92,7 @@ public class Rapidoid {
 
         CommonServiceIml us = new CommonServiceIml();
 
-        On.options("/{type}s").json( (Req req) -> {
+        On.options("/{type}/{pk}").json( (Req req) -> {
 //            req.response().header("Content-type", "application/json; charset=utf-8");
             req.response().header("Access-Control-Allow-Origin", "*");
             req.response().header("Access-Control-Allow-Headers", "origin, x-requested-with, content-type, authorization, " +
@@ -134,7 +134,6 @@ public class Rapidoid {
             }
             resp.header("Access-Control-Allow-Origin", "*");
             resp.header("Access-Control-Allow-Headers", "*");
-            req.response().header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS");
             return resp;
         });
 
@@ -151,7 +150,6 @@ public class Rapidoid {
             }
             resp.header("Access-Control-Allow-Origin", "*");
             resp.header("Access-Control-Allow-Headers", "*");
-            req.response().header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS");
             return resp;
         });
 
