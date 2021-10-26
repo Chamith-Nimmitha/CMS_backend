@@ -92,12 +92,21 @@ public class Rapidoid {
 
         CommonServiceIml us = new CommonServiceIml();
 
-        On.options("/{type}/{pk}").json( (Req req) -> {
-//            req.response().header("Content-type", "application/json; charset=utf-8");
+        On.options("/{type}s").plain( (Req req) -> {
             req.response().header("Access-Control-Allow-Origin", "*");
-            req.response().header("Access-Control-Allow-Headers", "origin, x-requested-with, content-type, authorization, " +
-                    "xKey, xForceRoute");
-            req.response().header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS");
+            req.response().header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Methods", "*");
+            req.response().code(200);
+            req.response().plain("");
+            return req.response();
+        });
+
+        On.options("/{type}s/{pk}").plain( (Req req) -> {
+            req.response().header("Access-Control-Allow-Origin", "*");
+            req.response().header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Methods", "*");
+            req.response().code(200);
+            req.response().plain("");
             return req.response();
         });
 
@@ -106,15 +115,16 @@ public class Rapidoid {
             List results = null;
             results = us.getAll(req.param("type"));
             Resp resp = req.response();
-            resp.header("Access-Control-Allow-Origin", "*");
-            resp.header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Origin", "*");
+            req.response().header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Methods", "*");
             resp.json(results);
             resp.code(200);
             return resp;
         });
 
         // add new user to any table
-        On.post("/{type}").json((Req req) -> {
+        On.post("/{type}s").json((Req req) -> {
             Map<String, Object> reqData = req.data();
             Map<String, Object> data = new HashMap<>();
             for(String k: reqData.keySet()){
@@ -132,13 +142,14 @@ public class Rapidoid {
                 resp.json("{'error': '"+req.param("type")+" creation success'}");
                 resp.code(400);
             }
-            resp.header("Access-Control-Allow-Origin", "*");
-            resp.header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Origin", "*");
+            req.response().header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Methods", "*");
             return resp;
         });
 
         // delete a specific user form any table
-        On.delete("/{type}/{pk}").json((Req req) -> {
+        On.delete("/{type}s/{pk}").json((Req req) -> {
             boolean result = us.delete(req.param("type"), req.param("pk"));
             Resp resp = req.response();
             if(result){
@@ -148,24 +159,26 @@ public class Rapidoid {
                 resp.json("{'error': '"+req.param("type")+" delete failed'}");
                 resp.code(400);
             }
-            resp.header("Access-Control-Allow-Origin", "*");
-            resp.header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Origin", "*");
+            req.response().header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Methods", "*");
             return resp;
         });
 
         // get specific user from any table
-        On.get("/{type}/{pk}").json((Req req) -> {
+        On.get("/{type}s/{pk}").json((Req req) -> {
             Map user = us.getOne(req.param("type"), req.param("pk"));
             Resp resp = req.response();
             resp.json(user);
-            resp.header("Access-Control-Allow-Origin", "*");
-            resp.header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Origin", "*");
+            req.response().header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Methods", "*");
             resp.code(200);
             return resp;
         });
 
         // update user in any table
-        On.patch("/{type}/{pk}").json((Req req) -> {
+        On.patch("/{type}s/{pk}").json((Req req) -> {
             Map<String, Object> reqData = req.data();
             Map<String, String> where = new HashMap<>();
             Map<String, Object> data = new HashMap<>();
@@ -185,8 +198,9 @@ public class Rapidoid {
                 resp.code(400);
                 resp.json("{'error':'"+req.param("type") +" update failed'}");
             }
-            resp.header("Access-Control-Allow-Origin", "*");
-            resp.header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Origin", "*");
+            req.response().header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Methods", "*");
             resp.code(200);
             return resp;
         });
