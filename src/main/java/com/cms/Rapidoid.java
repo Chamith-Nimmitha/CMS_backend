@@ -123,13 +123,18 @@ public class Rapidoid {
                 }
                 data.put(k, reqData.get(k));
             }
-            us.add(req.param("type"), data);
             Resp resp = req.response();
-            resp.json("{'msg': 'user creation success'}");
+            boolean result =  us.add(req.param("type"), data);
+            if(result){
+                resp.json("{'msg': '"+req.param("type")+" creation success'}");
+                resp.code(201);
+            }else{
+                resp.json("{'error': '"+req.param("type")+" creation success'}");
+                resp.code(400);
+            }
             resp.header("Access-Control-Allow-Origin", "*");
             resp.header("Access-Control-Allow-Headers", "*");
             req.response().header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS");
-            resp.code(201);
             return resp;
         });
 
@@ -138,14 +143,15 @@ public class Rapidoid {
             boolean result = us.delete(req.param("type"), req.param("pk"));
             Resp resp = req.response();
             if(result){
-                resp.json("{'msg': 'user delete success'}");
+                resp.json("{'msg': '"+req.param("type")+" delete success'}");
+                resp.code(204);
             }else{
-                resp.json("{'msg': 'user delete failed'}");
+                resp.json("{'error': '"+req.param("type")+" delete failed'}");
+                resp.code(400);
             }
             resp.header("Access-Control-Allow-Origin", "*");
             resp.header("Access-Control-Allow-Headers", "*");
             req.response().header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS");
-            resp.code(204);
             return resp;
         });
 
