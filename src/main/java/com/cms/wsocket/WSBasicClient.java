@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-public class WSClient{
+public class WSBasicClient {
 
     private static Socket clientSocket;
 
