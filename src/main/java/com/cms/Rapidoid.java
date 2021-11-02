@@ -2,6 +2,8 @@ package com.cms;
 import com.cms.services.CommonServiceIml;
 import com.cms.services.UserService;
 import com.cms.utils.Json;
+import com.cms.wsocket.NewHandler;
+import org.java_websocket.server.WebSocketServer;
 import org.rapidoid.http.MediaType;
 import org.rapidoid.http.Req;
 import org.rapidoid.http.Resp;
@@ -92,6 +94,10 @@ public class Rapidoid {
 //        Genaral functions
 
         CommonServiceIml us = new CommonServiceIml();
+        NewHandler newHandler= new NewHandler();
+        WebSocketServer serverSockeet = newHandler.getServerSocket();
+        serverSockeet.start();
+
 
         On.options("/{type}s").plain( (Req req) -> {
             req.response().header("Access-Control-Allow-Origin", "*");
@@ -195,6 +201,7 @@ public class Rapidoid {
             if(result){
                 resp.code(200);
                 resp.json("{'msg':'"+req.param("type") +" update success'}");
+                serverSockeet.broadcast(req.param("type")+ " updated. Please reload the page.");
             }else{
                 resp.code(400);
                 resp.json("{'error':'"+req.param("type") +" update failed'}");
