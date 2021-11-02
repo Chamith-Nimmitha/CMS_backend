@@ -42,6 +42,19 @@ public class MongoDB implements CommonDB {
 
     }
 
+    private String getRandomString() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder rndString = new StringBuilder();
+        Random rnd = new Random();
+        while (rndString.length() < 8) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            rndString.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = rndString.toString();
+        return saltStr;
+
+    }
+
     @Override
     public CommonDB getDB() {
         return (CommonDB) this;
@@ -88,6 +101,7 @@ public class MongoDB implements CommonDB {
     public void insert(String table, Map<String, Object> data) throws Exception {
         MongoCollection<Document> users = this.DB.getCollection(table);
         Document newDoc = new Document();
+        newDoc.append("id", getRandomString());
         data.keySet().forEach(x -> {
             newDoc.append(x.toString(), data.get(x));
         });
@@ -101,7 +115,7 @@ public class MongoDB implements CommonDB {
         try {
             MongoCollection<Document> users = this.DB.getCollection(table);
             BasicDBObject where = new BasicDBObject();
-            where.put("_id", new ObjectId(pk));
+            where.put("id", new ObjectId(pk));
             users.deleteOne(where);
             return 1;
         }catch (Exception e){
