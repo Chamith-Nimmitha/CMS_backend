@@ -19,79 +19,8 @@ public class Rapidoid {
 
     public void runServer() {
         On.address("127.0.0.1").port(9999);
-/*
-//
-////        get all users
-//        On.get("/users").json((Req req) -> {
-//            List results = null;
-//            results = ur.getUserList();
-//            Resp resp = req.response();
-//            resp.header("Access-Control-Allow-Origin", "*");
-//            resp.header("Access-Control-Allow-Headers", "*");
-//            resp.json(results);
-//            resp.code(200);
-//            return resp;
-//        });
-//        On.page("/about").html("Hello World");
-//        On.options("/users").json( (Req req) -> {
-////            req.response().header("Content-type", "application/json; charset=utf-8");
-//            req.response().header("Access-Control-Allow-Origin", "*");
-//            req.response().header("Access-Control-Allow-Headers", "origin, x-requested-with, content-type, authorization, " +
-//                    "xKey, xForceRoute");
-//            req.response().header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS");
-//            return req.response();
-//        });
-//
-////        add new user
-//        On.post("/user").json((Req req) -> {
-//            Map<String, Object> reqData = req.data();
-//            Map<Object, Object> data = new HashMap<>();
-//            data.put("name", reqData.get("name"));
-//            data.put("age", Integer.parseInt(reqData.get("age").toString()));
-//            ur.insertUser(data);
-//            Resp resp = req.response();
-//            resp.json("{'msg': 'user creation success'}");
-//            resp.code(201);
-//            return resp;
-//        });
-//
-////        delete a specific user
-//        On.delete("/user/{pk}").json((Req req) -> {
-//            ur.deleteUser(req.param("pk"));
-//            Resp resp = req.response();
-//            resp.json("{'msg': 'user creation success'}");
-//            resp.code(204);
-//            return resp;
-//        });
-//
-////        get specific user
-//        On.get("/user/{pk}").json((Req req) -> {
-//
-//            Map user = ur.getUser(req.param("pk"));
-//            Resp resp = req.response();
-//            resp.json(user);
-//            resp.code(200);
-//            return resp;
-//        });
-//
-////        update user
-//        On.patch("/user/{pk}").json((Req req) -> {
-//            Map<String, String> where = new HashMap<>();
-//            where.put("id", req.param("pk"));
-//            boolean result = ur.updateUser(req.data(), where);
-//            Resp resp = req.response();
-//            if(result){
-//                resp.code(200);
-//                resp.json("{'msg':'User update success'}");
-//            }else{
-//                resp.code(400);
-//                resp.json("{'error':'User update failed'}");
-//            }
-//            return resp;
-//        });
-//
-*/
-//        Genaral functions
+
+//      Genaral functions
 
         CommonServiceIml us = new CommonServiceIml();
         NewHandler newHandler= new NewHandler();
@@ -145,6 +74,7 @@ public class Rapidoid {
             if(result){
                 resp.json("{'msg': '"+req.param("type")+" creation success'}");
                 resp.code(201);
+                serverSockeet.broadcast(req.param("type")+ " added. Please reload the page.");
             }else{
                 resp.json("{'error': '"+req.param("type")+" creation success'}");
                 resp.code(400);
@@ -161,6 +91,7 @@ public class Rapidoid {
             Resp resp = req.response();
             if(result){
                 resp.json("{'msg': '"+req.param("type")+" delete success'}");
+                serverSockeet.broadcast(req.param("type")+ " deleted. Please reload the page.");
                 resp.code(204);
             }else{
                 resp.json("{'error': '"+req.param("type")+" delete failed'}");
