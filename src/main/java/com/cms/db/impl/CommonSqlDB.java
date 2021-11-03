@@ -29,13 +29,13 @@ public class CommonSqlDB implements CommonDB {
     }
 
     @Override
-    public Map<String, Map<String, String>> getTableMetaData(String table) throws SQLException {
+    public Map<String, Map<String, Object>> getTableMetaData(String table) throws SQLException {
         String query = "SELECT * from " + table + " LIMIT 1;";
         Statement st = this.con.createStatement();
         ResultSet rs = st.executeQuery(query);
         ResultSetMetaData metaData = rs.getMetaData();
 
-        Map<String, Map<String, String>> columns = new HashMap<>();
+        Map<String, Map<String, Object>> columns = new HashMap<>();
 
         String cName;
         String cType;
@@ -43,12 +43,59 @@ public class CommonSqlDB implements CommonDB {
             cName =metaData.getColumnName(i);
             cType = metaData.getColumnTypeName(i);
 
-            Map<String, String> col = new HashMap<>();
+            Map<String, Object> col = new HashMap<>();
             col.put("name", cName);
             col.put("dataType", cType);
             columns.put(cName, col);
         }
         return columns;
+    }
+
+    @Override
+    public boolean createTableSchema(Map<String, Object> metaData) throws Exception {
+        String tableName = (String) metaData.get("tableName");
+        List<Map<String, Object>> columns = (List<Map<String, Object>>) metaData.get("columns");
+
+        String query = "CREATE TABLE " + tableName + "(";
+        boolean isFirstColumn = true;
+
+        for (Map<String, Object> column: columns){
+            String cName = column.get("name").toString();
+            String cType = column.get("dataType").toString();
+            boolean isPrimaryKey = Boolean.parseBoolean(column.getOrDefault("isPrimary", "0").toString());
+            int length = Integer.parseInt(column.get("length").toString());
+
+            if( isFirstColumn){
+                isFirstColumn = false;
+            }else{
+                query += ", ";
+            }
+
+            query += cName + " ";
+
+            switch (cType){
+                case "INT":
+                    query += "INT(" + length + ") ";
+                    break;
+                case "VARCHAR":
+                    query += "VARCHAR(" + length + ") ";
+                    break;
+                default:
+                    throw new Exception("Column dataType not match. " + cType +" is not a valid type.");
+            }
+
+            if(isPrimaryKey){
+                query += "PRIMARY KEY ";
+            }
+        }
+        query += ")";
+        Statement st = this.con.createStatement();
+        int result = st.executeUpdate(query);
+        if(result == 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override

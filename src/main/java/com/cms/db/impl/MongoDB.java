@@ -1,7 +1,6 @@
 package com.cms.db.impl;
 import com.cms.config.Configuration;
 import com.cms.config.ConfigurationManager;
-import com.cms.db.CommonDB;
 import com.cms.db.CommonNosqlDB;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.*;
@@ -51,8 +50,13 @@ public class MongoDB implements CommonNosqlDB {
     }
 
     @Override
-    public Map<String, Map<String, String>> getTableMetaData(String table) {
+    public Map<String, Map<String, Object>> getTableMetaData(String table) {
         return null;
+    }
+
+    @Override
+    public boolean createTableSchema(Map<String, Object> metaData) throws Exception {
+        return false;
     }
 
     @Override

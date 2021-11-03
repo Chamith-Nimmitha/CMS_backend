@@ -26,7 +26,7 @@ public class CommonServiceIml implements CommonService {
         try {
             res = this.DB.select(type);
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
         res.forEach(System.out::println);
         return  res;
@@ -101,11 +101,7 @@ public class CommonServiceIml implements CommonService {
     }
 
     @Override
-    public Map<String, Map<String, String>> getTableMetaData(String type) {
-        try {
-            return this.DB.getTableMetaData(type);
-        }catch (Exception e){
-            return null;
-        }
+    public Map<String, Map<String, Object>> getTableMetaData(String type) throws Exception {
+        return this.DB.getTableMetaData(type);
     }
 }

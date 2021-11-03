@@ -1,5 +1,6 @@
 package com.cms;
 import com.cms.services.CommonServiceIml;
+import com.cms.services.DbSchemaManageService;
 import com.cms.services.UserService;
 import com.cms.utils.Json;
 import com.cms.wsocket.NewHandler;
@@ -57,29 +58,75 @@ public class Rapidoid {
             return req.response();
         });
 
+
+        // Get tabel column informations
         On.get("/{type}s/meta").json( (Req req) -> {
             System.out.println("called");
-            Map<String, Map<String, String>> results= null;
-            results = us.getTableMetaData(req.param("type"));
+            Map<String, Map<String, Object>> results= null;
             Resp resp = req.response();
-            req.response().header("Access-Control-Allow-Origin", "*");
-            req.response().header("Access-Control-Allow-Headers", "*");
-            req.response().header("Access-Control-Allow-Methods", "*");
-            resp.json(results);
-            resp.code(200);
+            resp.header("Access-Control-Allow-Origin", "*");
+            resp.header("Access-Control-Allow-Headers", "*");
+            resp.header("Access-Control-Allow-Methods", "*");
+
+            try {
+                results = us.getTableMetaData(req.param("type"));
+                resp.json(results);
+                resp.code(200);
+            }catch (Exception e){
+                Map<String, String> errMsg = new HashMap<>();
+                errMsg.put("error", req.param("type")+ " schema not found.");
+                resp.json(errMsg);
+                resp.code(200);
+            }
+            return resp;
+        });
+
+        // Create table
+        On.post("/schema").json( (Req req) -> {
+            DbSchemaManageService dbSchemaManageService = new DbSchemaManageService();
+            Resp resp = req.response();
+            resp.header("Access-Control-Allow-Origin", "*");
+            resp.header("Access-Control-Allow-Headers", "*");
+            resp.header("Access-Control-Allow-Methods", "*");
+
+            try {
+                System.out.println(req.data());
+                boolean result =  dbSchemaManageService.createTableSchema((Map<String, Object>) req.data());
+                if(result){
+                    Map<String, String> msg = new HashMap<>();
+                    msg.put("msg"," Schema create successfull");
+                    resp.json(msg);
+                    resp.code(200);
+                }else{
+                    throw new Exception();
+                }
+            }catch (Exception e){
+                System.out.println(e);
+                Map<String, String> msg = new HashMap<>();
+                msg.put("error"," Schema create failed");
+                resp.json(msg);
+                resp.code(400);
+            }
             return resp;
         });
 
         //  get all record in specific type
         On.get("/{type}s").json((Req req) -> {
             List results = null;
-            results = us.getAll(req.param("type"));
             Resp resp = req.response();
             req.response().header("Access-Control-Allow-Origin", "*");
             req.response().header("Access-Control-Allow-Headers", "*");
             req.response().header("Access-Control-Allow-Methods", "*");
-            resp.json(results);
-            resp.code(200);
+            try {
+                results = us.getAll(req.param("type"));
+                resp.json(results);
+                resp.code(200);
+            }catch (Exception e){
+                Map<String, String> errMsg = new HashMap<>();
+                errMsg.put("error", req.param("type")+ " schema not found.");
+                resp.json(errMsg);
+                resp.code(200);
+            }
             return resp;
         });
 
@@ -94,36 +141,55 @@ public class Rapidoid {
                 data.put(k, reqData.get(k));
             }
             Resp resp = req.response();
-            boolean result =  us.add(req.param("type"), data);
-            if(result){
-                resp.json("{'msg': '"+req.param("type")+" creation success'}");
-                resp.code(201);
-//                serverSockeet.broadcast(req.param("type")+ " added. Please reload the page.");
-            }else{
-                resp.json("{'error': '"+req.param("type")+" creation success'}");
-                resp.code(400);
-            }
             req.response().header("Access-Control-Allow-Origin", "*");
             req.response().header("Access-Control-Allow-Headers", "*");
             req.response().header("Access-Control-Allow-Methods", "*");
+
+            try {
+                boolean result =  us.add(req.param("type"), data);
+                if(result){
+                    Map<String, String> msg = new HashMap<>();
+                    msg.put("msg", req.param("type")+ " creation success.");
+                    resp.json(msg);
+                    resp.code(201);
+//                serverSockeet.broadcast(req.param("type")+ " added. Please reload the page.");
+                }else{
+                   throw new Exception();
+                }
+            }catch (Exception e){
+                Map<String, String> errMsg = new HashMap<>();
+                errMsg.put("error", req.param("type")+ " creation failed.");
+                resp.json(errMsg);
+                resp.code(400);
+            }
             return resp;
+
         });
 
         // delete a specific user form any table
         On.delete("/{type}s/{pk}").json((Req req) -> {
-            boolean result = us.delete(req.param("type"), req.param("pk"));
             Resp resp = req.response();
-            if(result){
-                resp.json("{'msg': '"+req.param("type")+" delete success'}");
-//                serverSockeet.broadcast(req.param("type")+ " deleted. Please reload the page.");
-                resp.code(204);
-            }else{
-                resp.json("{'error': '"+req.param("type")+" delete failed'}");
-                resp.code(400);
-            }
             req.response().header("Access-Control-Allow-Origin", "*");
             req.response().header("Access-Control-Allow-Headers", "*");
             req.response().header("Access-Control-Allow-Methods", "*");
+
+            try {
+                boolean result = us.delete(req.param("type"), req.param("pk"));
+                if(result){
+                    Map<String, String> msg = new HashMap<>();
+                    msg.put("msg", req.param("type")+ " deletion success.");
+                    resp.json(msg);
+                    resp.code(201);
+//                serverSockeet.broadcast(req.param("type")+ " added. Please reload the page.");
+                }else{
+                    throw new Exception();
+                }
+            }catch (Exception e){
+                Map<String, String> errMsg = new HashMap<>();
+                errMsg.put("error", req.param("type")+ " deletion failed.");
+                resp.json(errMsg);
+                resp.code(400);
+            }
             return resp;
         });
 
@@ -151,20 +217,29 @@ public class Rapidoid {
                 data.put(k, reqData.get(k));
             }
             where.put("id", req.param("pk"));
-            boolean result = us.update(req.param("type"), data, where);
+
             Resp resp = req.response();
-            if(result){
-                resp.code(200);
-                resp.json("{'msg':'"+req.param("type") +" update success'}");
-//                serverSockeet.broadcast(req.param("type")+ " updated. Please reload the page.");
-            }else{
-                resp.code(400);
-                resp.json("{'error':'"+req.param("type") +" update failed'}");
-            }
             req.response().header("Access-Control-Allow-Origin", "*");
             req.response().header("Access-Control-Allow-Headers", "*");
             req.response().header("Access-Control-Allow-Methods", "*");
-            resp.code(200);
+
+            try {
+                boolean result = us.update(req.param("type"), data, where);
+                if(result){
+                    Map<String, String> msg = new HashMap<>();
+                    msg.put("msg", req.param("type")+ " update success.");
+                    resp.json(msg);
+                    resp.code(201);
+//                serverSockeet.broadcast(req.param("type")+ " added. Please reload the page.");
+                }else{
+                    throw new Exception();
+                }
+            }catch (Exception e){
+                Map<String, String> errMsg = new HashMap<>();
+                errMsg.put("error", req.param("type")+ " update failed.");
+                resp.json(errMsg);
+                resp.code(400);
+            }
             return resp;
         });
     }

@@ -10,5 +10,5 @@ public interface CommonService {
     boolean add(String type, Map<String, Object> data);
     boolean update(String type, Map<String, Object> newData, Map<String, String> where );
     Map<String, Object> getOne(String type, String pk);
-    Map<String, Map<String, String>> getTableMetaData(String type);
+    Map<String, Map<String, Object>> getTableMetaData(String type) throws Exception;
 }
