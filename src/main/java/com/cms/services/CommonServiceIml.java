@@ -1,34 +1,17 @@
 package com.cms.services;
 
 
-import com.cms.config.Configuration;
-import com.cms.config.ConfigurationManager;
-import com.cms.db.CommonDB;
-import com.cms.db.CommonSqlDB;
-import com.cms.db.MongoDB;
-import com.cms.db.TestDB;
+import com.cms.db.*;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CommonServiceIml implements CommonService, BasicService{
+public class CommonServiceIml implements CommonService {
 
-    protected static CommonDB DB;
+    protected CommonDB DB;
     public CommonServiceIml() {
-        Configuration configuration = ConfigurationManager.getInstance().getCurrentConfiguration();
-        String dbType = configuration.getDbType();
-        System.out.println(dbType);
-        if(dbType.equals("sql")){
-            this.DB = new CommonSqlDB();
-        }else if(dbType.equals("mongo")) {
-            this.DB = new MongoDB();
-        }else if(dbType.equals("test")){
-            this.DB = new TestDB();
-        }else{
-            System.out.println("No matching DB implementation. Ple check applicationConfig.json.");
-        }
+        this.DB = new DbFactory().getDbInstance();
     }
     public CommonServiceIml(CommonDB DB){
         this.DB = DB;
@@ -115,5 +98,14 @@ public class CommonServiceIml implements CommonService, BasicService{
             return (Map) result.get(0);
         }
         return  new HashMap();
+    }
+
+    @Override
+    public Map<String, Map<String, String>> getTableMetaData(String type) {
+        try {
+            return this.DB.getTableMetaData(type);
+        }catch (Exception e){
+            return null;
+        }
     }
 }

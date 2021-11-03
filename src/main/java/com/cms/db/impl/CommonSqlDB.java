@@ -1,7 +1,8 @@
-package com.cms.db;
+package com.cms.db.impl;
 
 import com.cms.config.Configuration;
 import com.cms.config.ConfigurationManager;
+import com.cms.db.CommonDB;
 
 import java.sql.*;
 import java.util.*;
@@ -28,23 +29,35 @@ public class CommonSqlDB implements CommonDB {
     }
 
     @Override
-    public void createConnection() throws SQLException {
-        this.con  = DriverManager.getConnection(this.url, this.username, this.password);
-        System.out.println("Connection established");
-    }
+    public Map<String, Map<String, String>> getTableMetaData(String table) throws SQLException {
+        String query = "SELECT * from " + table + " LIMIT 1;";
+        Statement st = this.con.createStatement();
+        ResultSet rs = st.executeQuery(query);
+        ResultSetMetaData metaData = rs.getMetaData();
 
-    @Override
-    public CommonDB getDB() {
-        return (CommonDB)this;
+        Map<String, Map<String, String>> columns = new HashMap<>();
+
+        String cName;
+        String cType;
+        for( int i=1; i <= metaData.getColumnCount(); i++){
+            cName =metaData.getColumnName(i);
+            cType = metaData.getColumnTypeName(i);
+
+            Map<String, String> col = new HashMap<>();
+            col.put("name", cName);
+            col.put("dataType", cType);
+            columns.put(cName, col);
+        }
+        return columns;
     }
 
     @Override
     public List select(String table) throws SQLException {
-        String query = "SELECT * from " + table;
-        Statement st = null;
+
         List li = new LinkedList();
 
-        st = this.con.createStatement();
+        String query = "SELECT * from " + table;
+        Statement st = this.con.createStatement();
         ResultSet rs = st.executeQuery(query);
         ResultSetMetaData metaData = rs.getMetaData();
         String cName;

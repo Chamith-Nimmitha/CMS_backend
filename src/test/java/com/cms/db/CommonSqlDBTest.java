@@ -1,5 +1,6 @@
 package com.cms.db;
 
+import com.cms.db.impl.TestDB;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -8,7 +9,7 @@ import java.util.Map;
 
 class CommonSqlDBTest {
 
-    CommonDB DB = new CommonSqlDB();
+    CommonDB DB = new TestDB();
     @Test
     void select() {
         List users = null;
@@ -22,6 +23,18 @@ class CommonSqlDBTest {
 
     @Test
     void testSelect() {
+
+        Map<String, Object> userData = new HashMap();
+        userData.put("name", "kamal");
+        userData.put("age", "45");
+
+        try {
+            DB.insert("user", userData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         List users = null;
         Map<String, String> where = new HashMap();
         where.put("name", "kamal");

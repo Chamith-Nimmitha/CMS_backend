@@ -23,12 +23,23 @@ public class Rapidoid {
 //      Genaral functions
 
         CommonServiceIml us = new CommonServiceIml();
-        NewHandler newHandler= new NewHandler();
-        WebSocketServer serverSockeet = newHandler.getServerSocket();
-        serverSockeet.start();
+//        NewHandler newHandler= new NewHandler();
+//        WebSocketServer serverSockeet = newHandler.getServerSocket();
+//        serverSockeet.start();
 
 
         On.options("/{type}s").plain( (Req req) -> {
+            System.out.println("options");
+            req.response().header("Access-Control-Allow-Origin", "*");
+            req.response().header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Methods", "*");
+            req.response().code(200);
+            req.response().plain("");
+            return req.response();
+        });
+
+        On.options("/a/meta/{type}s}").plain( (Req req) -> {
+            System.out.println("dfdfd");
             req.response().header("Access-Control-Allow-Origin", "*");
             req.response().header("Access-Control-Allow-Headers", "*");
             req.response().header("Access-Control-Allow-Methods", "*");
@@ -44,6 +55,19 @@ public class Rapidoid {
             req.response().code(200);
             req.response().plain("");
             return req.response();
+        });
+
+        On.get("/{type}s/meta").json( (Req req) -> {
+            System.out.println("called");
+            Map<String, Map<String, String>> results= null;
+            results = us.getTableMetaData(req.param("type"));
+            Resp resp = req.response();
+            req.response().header("Access-Control-Allow-Origin", "*");
+            req.response().header("Access-Control-Allow-Headers", "*");
+            req.response().header("Access-Control-Allow-Methods", "*");
+            resp.json(results);
+            resp.code(200);
+            return resp;
         });
 
         //  get all record in specific type
@@ -74,7 +98,7 @@ public class Rapidoid {
             if(result){
                 resp.json("{'msg': '"+req.param("type")+" creation success'}");
                 resp.code(201);
-                serverSockeet.broadcast(req.param("type")+ " added. Please reload the page.");
+//                serverSockeet.broadcast(req.param("type")+ " added. Please reload the page.");
             }else{
                 resp.json("{'error': '"+req.param("type")+" creation success'}");
                 resp.code(400);
@@ -91,7 +115,7 @@ public class Rapidoid {
             Resp resp = req.response();
             if(result){
                 resp.json("{'msg': '"+req.param("type")+" delete success'}");
-                serverSockeet.broadcast(req.param("type")+ " deleted. Please reload the page.");
+//                serverSockeet.broadcast(req.param("type")+ " deleted. Please reload the page.");
                 resp.code(204);
             }else{
                 resp.json("{'error': '"+req.param("type")+" delete failed'}");
@@ -132,7 +156,7 @@ public class Rapidoid {
             if(result){
                 resp.code(200);
                 resp.json("{'msg':'"+req.param("type") +" update success'}");
-                serverSockeet.broadcast(req.param("type")+ " updated. Please reload the page.");
+//                serverSockeet.broadcast(req.param("type")+ " updated. Please reload the page.");
             }else{
                 resp.code(400);
                 resp.json("{'error':'"+req.param("type") +" update failed'}");

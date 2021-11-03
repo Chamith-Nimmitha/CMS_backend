@@ -1,6 +1,8 @@
-package com.cms.db;
+package com.cms.db.impl;
 import com.cms.config.Configuration;
 import com.cms.config.ConfigurationManager;
+import com.cms.db.CommonDB;
+import com.cms.db.CommonNosqlDB;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.*;
 import com.mongodb.client.result.UpdateResult;
@@ -9,9 +11,7 @@ import org.bson.types.ObjectId;
 
 import java.util.*;
 
-import static com.mongodb.client.model.Filters.eq;
-
-public class MongoDB implements CommonDB {
+public class MongoDB implements CommonNosqlDB {
 
     MongoDatabase DB;
     public MongoDB(){
@@ -37,11 +37,6 @@ public class MongoDB implements CommonDB {
         }
     }
 
-    @Override
-    public void createConnection(){
-
-    }
-
     private String getRandomString() {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder rndString = new StringBuilder();
@@ -56,8 +51,8 @@ public class MongoDB implements CommonDB {
     }
 
     @Override
-    public CommonDB getDB() {
-        return (CommonDB) this;
+    public Map<String, Map<String, String>> getTableMetaData(String table) {
+        return null;
     }
 
     @Override

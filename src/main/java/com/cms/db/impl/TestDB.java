@@ -1,11 +1,13 @@
-package com.cms.db;
+package com.cms.db.impl;
+
+import com.cms.db.CommonDB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestDB implements CommonDB{
+public class TestDB implements CommonDB {
 
     public static int userCount = 0;
     public static Map<String, Map<String, Object>> store = new HashMap<>();
@@ -14,13 +16,8 @@ public class TestDB implements CommonDB{
     }
 
     @Override
-    public void createConnection() throws Exception {
-
-    }
-
-    @Override
-    public CommonDB getDB() {
-        return this;
+    public Map<String, Map<String, String>> getTableMetaData(String table) {
+        return null;
     }
 
     @Override
