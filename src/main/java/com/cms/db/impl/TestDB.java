@@ -2,10 +2,8 @@ package com.cms.db.impl;
 
 import com.cms.db.CommonDB;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 
 public class TestDB implements CommonDB {
 
@@ -16,6 +14,13 @@ public class TestDB implements CommonDB {
         Map<String, Object> schemas = new HashMap<>();
         store.put("schemas", schemas);
         createTableSchema("user");
+    }
+
+    @Override
+    public Set<String> getTableNames() throws SQLException {
+        Set<String> tableNames = store.keySet();
+        tableNames.remove("schemas");
+        return tableNames;
     }
 
     @Override

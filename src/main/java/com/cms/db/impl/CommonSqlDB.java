@@ -28,6 +28,20 @@ public class CommonSqlDB implements CommonDB {
         }
     }
 
+
+    public Set<String> getTableNames() throws SQLException {
+
+        Set<String> tableNames = new HashSet<>();
+
+        Statement st = this.con.createStatement();
+        ResultSet rs = st.executeQuery("SELECT table_name FROM information_schema.tables " +
+                "WHERE table_schema = 'javaTest';");
+        while(rs.next()){
+            tableNames.add(rs.getString(1));
+        }
+        return tableNames;
+    }
+
     @Override
     public Map<String, Map<String, Object>> getTableMetaData(String table) throws SQLException {
         String query = "SELECT * from " + table + " LIMIT 1;";
@@ -84,11 +98,16 @@ public class CommonSqlDB implements CommonDB {
                     throw new Exception("Column dataType not match. " + cType +" is not a valid type.");
             }
 
+            if(cName.equals("id")){
+                query += " AUTO_INCREMENT ";
+            }
+
             if(isPrimaryKey){
                 query += "PRIMARY KEY ";
             }
         }
         query += ")";
+        System.out.println(query);
         Statement st = this.con.createStatement();
         int result = st.executeUpdate(query);
         if(result == 0){

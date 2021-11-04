@@ -8,6 +8,7 @@ import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class MongoDB implements CommonNosqlDB {
@@ -47,6 +48,11 @@ public class MongoDB implements CommonNosqlDB {
         String saltStr = rndString.toString();
         return saltStr;
 
+    }
+
+    @Override
+    public Set<String> getTableNames() throws SQLException {
+        return null;
     }
 
     @Override
