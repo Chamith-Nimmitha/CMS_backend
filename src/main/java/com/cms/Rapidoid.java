@@ -10,10 +10,7 @@ import org.rapidoid.http.Req;
 import org.rapidoid.http.Resp;
 import org.rapidoid.setup.On;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Rapidoid {
 
@@ -61,7 +58,6 @@ public class Rapidoid {
 
         // Get tabel column informations
         On.get("/{type}s/meta").json( (Req req) -> {
-            System.out.println("called");
             Map<String, Map<String, Object>> results= null;
             Resp resp = req.response();
             resp.header("Access-Control-Allow-Origin", "*");
@@ -106,6 +102,30 @@ public class Rapidoid {
                 msg.put("error"," Schema create failed");
                 resp.json(msg);
                 resp.code(400);
+            }
+            return resp;
+        });
+
+        // Get all tablenames
+        On.get("/contentTypes").json( (Req req) -> {
+            Set<String> results= null;
+            DbSchemaManageService dbSchemaManageService = new DbSchemaManageService();
+            Resp resp = req.response();
+            resp.header("Access-Control-Allow-Origin", "*");
+            resp.header("Access-Control-Allow-Headers", "*");
+            resp.header("Access-Control-Allow-Methods", "*");
+
+            try {
+                results = dbSchemaManageService.getDbTableNames();
+                HashMap<String, Object> finalJson = new HashMap<>();
+                finalJson.put("contentTypes", results);
+                resp.json(finalJson);
+                resp.code(200);
+            }catch (Exception e){
+                Map<String, String> errMsg = new HashMap<>();
+                errMsg.put("error", " Error when get database tables.");
+                resp.json(errMsg);
+                resp.code(200);
             }
             return resp;
         });
